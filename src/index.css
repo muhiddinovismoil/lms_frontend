@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Mada:wght@200..900&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --breand-rang-1: #557c83;
+    --breand-rang-2: #3aada8;
+    --matn-rang-1: #1c274c;
+    --oq-rang-1: #fff;
+    --stroka-rang-2: #f9f9f9;
+    --qizil-rang-1: #ff5f5f;
+    --qidiruv-tizimi-1: #ddd;
+    --filter-matn-rang-1: #9f9f9f;
+    --d9d9d9: #c3e1ff;
+    --d9d9d9: #68e3de;
+    --d9d9d9: #8ac5c2;
+    --mirrorname: rgba(0, 0, 0, 0.8);
+    --font-family: "Mada", sans-serif;
+}

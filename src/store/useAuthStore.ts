@@ -1,29 +1,40 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-interface DataT {
-  user: UserT;
-  token: string | null;
-  setUser: (user: UserT) => void;
-  setToken: (token: string) => void;
-}
-interface UserT {
-  full_name?: string;
-  username?: string;
-  role?: string;
-  user_id?: string;
+import Cookie from "js-cookie";
+import { TokenData, UserT } from "../types/interface";
+import { CookiesEnum } from "../types/enum";
+import { GetCookie, RemoveCookie, SaveCookie } from "../config/cookie";
+interface storeT {
+    user: UserT | null;
+    token: string | null;
+    logIn: ({ user, data }: { user: UserT; data: TokenData }) => void;
+    logOut: () => void;
 }
 
-export const useAuthStore = create<DataT>()(
-  persist(
-    (set) => ({
-      user: {},
-      token: null,
-      setUser: (user: UserT) => set({ user: user }),
-      setToken: (token: string) => set({ token }),
-    }),
-    {
-      name: "auth",
-    }
-  )
-);
+export const useAuthStore = create<storeT>()((set) => ({
+    user: GetCookie(CookiesEnum.USER) || null,
+    token: Cookie.get(CookiesEnum.ACCESS_TOKEN) as string | null,
+
+    logIn: ({ user, data }: { user: UserT; data: TokenData }) => {
+        SaveCookie(
+            CookiesEnum.ACCESS_TOKEN,
+            data.accessToken,
+            data.access_token_expire
+        );
+        SaveCookie(
+            CookiesEnum.REFRESH_TOKEN,
+            data.refreshToken,
+            data.refresh_token_expire
+        );
+        SaveCookie(CookiesEnum.USER, user, data.access_token_expire);
+
+        set({ user, token: data.accessToken });
+    },
+
+    logOut: () => {
+        RemoveCookie(CookiesEnum.ACCESS_TOKEN);
+        RemoveCookie(CookiesEnum.USER);
+        RemoveCookie(CookiesEnum.REFRESH_TOKEN);
+
+        set({ user: null, token: null });
+    },
+}));
